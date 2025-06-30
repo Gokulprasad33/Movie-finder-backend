@@ -2,7 +2,7 @@ from flask import Flask,request,jsonify
 from flask_cors import CORS
 import pandas as pd
 import re # Regex
-import numpy as np
+import numpy as np 
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +18,7 @@ def suggest_a_movies():
     year = data["releaseyear"]
     nsfw = data["nsfw"]
     toprated = data["toprated"]
+    blockList=data.get('blockedMovie',[]) + data.get('watchLists',[])
 
     # Processing data 
 
@@ -60,7 +61,8 @@ def suggest_a_movies():
         (df["original_language"] == language_preference) &
         (df["release_year"] > timePeriod[0]) & (df["release_year"] < timePeriod[1])&
         df["adult"].astype(str).str.contains(nsfw, na=False) & 
-        (df["vote_average"]> ratingLimit) & (df["vote_count"]>=ratingCountLimit) # TopRaing filter avg vote >8 and Vote count > 1000
+        (df["vote_average"]> ratingLimit) & (df["vote_count"]>=ratingCountLimit) & # TopRaing filter avg vote >8 and Vote count > 1000
+        ~df["id"].isin(blockList) # Not in the blockecMovieList
     ]
 
 
