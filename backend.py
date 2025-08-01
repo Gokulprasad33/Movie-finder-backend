@@ -77,6 +77,9 @@ def suggest_a_movies():
     result = filtered.sample(min(10, len(filtered))).to_dict(orient="records")
     return jsonify(result)
 
+@app.route("/api/initiate", methods=["POST"])
+def initialize():
+    return jsonify({"status":True})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
